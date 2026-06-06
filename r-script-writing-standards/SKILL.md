@@ -1,38 +1,61 @@
 ---
 name: r-script-writing-standards
-description: Generate, revise, review, and standardize R scripts for scientific data analysis projects. Use when Codex needs to write or audit R, .R, Rscript, or analysis pipeline code with readable stepwise structure, useful comments, restrained function use, explicit input/output organization, and reproducible results.
+description: Workflow-guided standards for generating, revising, reviewing, and standardizing R scripts in scientific data analysis projects. Use when Codex needs to write or audit R, .R, Rscript, or analysis pipeline code with readable stepwise structure, useful comments, restrained function use, explicit input/output organization, reproducible outputs, and researcher-friendly code style.
 ---
 
 # R Script Writing Standards
 
-## Purpose
+Use this skill to produce R analysis scripts that are clear enough for a researcher to understand, modify, rerun, and audit later. This skill is not for building an R package by default; it is for writing readable, reproducible, easy-to-modify scientific analysis scripts.
 
-Use this skill to produce R analysis scripts that are clear enough for a researcher to understand, modify, rerun, and audit later. Prefer readable, reproducible pipeline scripts over software-package-like abstractions.
+Core position: prefer a transparent analysis pipeline over excessive abstraction. Use functions only when they make the analysis more reproducible or easier to read.
 
-When helpful, consult `examples/r_script_template.R` for a concrete structure, section header style, and output organization pattern.
+## Highest-Priority Rules
 
-## Before Writing
+1. Do not invent input files, sample groups, metadata columns, model formulas, statistical parameters, or biological/scientific interpretations.
+2. If required information is missing, ask only for the missing information before writing a formal script.
+3. If the user explicitly asks for a draft with incomplete information, write a best-effort script and mark assumptions near the relevant code and in the final response.
+4. Keep the pipeline order visible: packages and environment, input preparation, formal analysis, result organization, output export.
+5. Use comments to explain analysis intent, key decisions, parameters, transformations, and outputs. Do not comment obvious syntax.
+6. Define custom functions immediately before the step that uses them, unless the workflow requires otherwise.
+7. Save outputs in predictable folders and make paths, grouping variables, model formulas, and parameters easy to modify.
 
-Check whether the user provided enough information to write a formal R script:
+## Scenario Routing
 
-- Input files: paths, meaning of each file, row/column structure, sample IDs, feature IDs, grouping variables, and metadata variables.
-- Analysis goal: what analysis should be performed and what outputs are expected.
-- Methodology: statistical methods, models, parameters, software packages, or a paper Methods section.
-- Reference code: prior scripts or GitHub examples to adapt to the current data structure.
+Start by identifying the user's task, then read only the relevant workflow or template.
 
-If key information is missing, ask for the missing details before writing the full script. If the user explicitly requests a draft despite incomplete information, write a best-effort script and mark assumptions clearly.
+| User request | Scenario | Read first |
+|---|---|---|
+| "Write an R script", "generate analysis code", "make a full R pipeline" | Draft a new R analysis script | `workflows/write-r-analysis-script.md` then `templates/r_analysis_script.R` |
+| "Review this R script", "standardize/refactor this script", "make it readable" | Review or revise an existing script | `workflows/review-r-script.md` then `references/review_checklist.md` |
+| "Adapt this paper method/GitHub code/reference script to my data" | Adapt reference methodology or code | `workflows/adapt-reference-code.md` |
+| "Give me a template/skeleton" | Provide a reusable R script skeleton | `templates/r_analysis_script.R` and `examples/r_script_template.R` |
+| The request is about one style detail only | Apply targeted style guidance | `references/r_style_rules.md` |
 
-## Required Pipeline
+## General Workflow
 
-Organize scripts in this order unless the analysis workflow clearly requires otherwise:
+### Step 1: Confirm Required Information
 
-1. Load required R packages and set up the environment.
+Before writing a formal script, confirm the essentials listed in `references/input_information_checklist.md`:
+
+- input file paths and file meanings
+- data structure and identifier columns
+- analysis goal and expected outputs
+- methods, models, parameters, and required R packages
+- reference code or methodology, if any
+
+If only one or two details are missing, ask only for those details. Do not repeat information the user already provided.
+
+### Step 2: Choose Structure
+
+Use the standard section order:
+
+1. Load packages and set environment.
 2. Prepare input data.
 3. Perform formal analysis.
 4. Organize and summarize results.
 5. Save result files and export figures.
 
-Use visible section headers for every major step:
+Use visible section headers:
 
 ```r
 # ============================================================
@@ -40,60 +63,80 @@ Use visible section headers for every major step:
 # ============================================================
 ```
 
-In the data preparation section, explain what each input file means and transform data into the format required by the analysis. For microbiome-style feature tables, prefer samples in rows and taxa/features in columns unless the selected method requires a different orientation.
+### Step 3: Write or Revise the Script
 
-## Function Rules
+Apply `references/r_style_rules.md`:
 
-Define a function immediately before the analysis step that needs it. Do not collect all functions at the top of the script unless that ordering is necessary for the workflow.
+- use clear object names
+- avoid compressed one-line expressions when multi-line code is clearer
+- avoid unnecessary nesting
+- keep code close to the actual analysis logic
+- add comments for non-obvious analysis decisions
+- use local custom functions only when they reduce meaningful repetition or clarify complex logic
 
-Avoid unnecessary functions. Add a function only when it improves reproducibility, removes meaningful repeated code, or makes a complex step easier to read.
+For reproducibility and output organization, apply `references/reproducible_outputs.md`.
 
-Before each custom function, add a brief comment stating:
+### Step 4: Self-Check Before Delivery
 
-- what the function does
-- the key inputs
-- the output
-- why the function is needed in this step
+Before returning a script or revision, check:
 
-## Commenting Style
+- required inputs are named and explained
+- sample IDs, feature IDs, grouping variables, and metadata variables are explicit
+- data orientation is stated; for microbiome-style feature tables, samples are rows and taxa/features are columns unless the method requires otherwise
+- all assumptions are marked
+- functions are placed close to where they are used
+- outputs are saved to predictable paths
+- plots and tables have clear filenames
+- final response lists assumptions, required input files, expected output files, and user-editable parameters
 
-Write comments that explain intent and analysis decisions, not obvious syntax.
-
-- Add a short comment block before each major section explaining the section goal.
-- Add concise comments for key parameters, statistical models, filtering rules, transformations, custom functions, and output files.
-- Avoid commenting routine R syntax such as assignment, package loading, or simple column selection unless the line carries analysis meaning.
-
-## Readability Style
-
-Prioritize readability for future scientific reuse.
-
-- Use clear object names such as `metadata`, `feature_table`, `alpha_diversity`, and `group_summary`.
-- Avoid overly compressed code and complex one-line expressions.
-- Avoid unnecessary nesting.
-- Keep code close to the actual analysis logic.
-- Prefer explicit intermediate objects when they make the analysis easier to inspect.
-- Keep package loading, path setup, data checks, analysis, summaries, and exports visibly separated.
-
-## Output Expectations
+## Output Format
 
 When using this skill, the response should preferably include:
 
-- a complete R script or a clearly scoped revision
-- a short explanation of the script structure
-- assumptions made
-- required input files
-- expected output files
-- notes on where the user should modify paths, grouping variables, model formulas, or parameters
+```markdown
+Completed: <script name or revision target>
 
-## Review Checklist
+Structure:
+- 1. Load packages and set environment
+- 2. Prepare input data
+- 3. Perform formal analysis
+- 4. Organize and summarize results
+- 5. Save result files and export figures
 
-When reviewing an existing R script, check:
+Assumptions:
+- ...
 
-- whether the pipeline order is clear
-- whether input files and data orientation are explained
-- whether comments explain analysis decisions without clutter
-- whether functions are local to the steps that need them
-- whether object names are readable
-- whether outputs are saved in predictable folders
-- whether assumptions, paths, formulas, and parameters are easy to modify
-- whether the script is reproducible without becoming overly engineered
+Required input files:
+- ...
+
+Expected output files:
+- ...
+
+User should modify:
+- paths: ...
+- grouping variables: ...
+- model formulas: ...
+- parameters: ...
+```
+
+## Resource Index
+
+| Type | Path | Purpose |
+|---|---|---|
+| Workflow | `workflows/write-r-analysis-script.md` | Step-by-step process for drafting a new R analysis script |
+| Workflow | `workflows/review-r-script.md` | Review and revision workflow for existing R scripts |
+| Workflow | `workflows/adapt-reference-code.md` | Adapt paper methods, GitHub code, or previous scripts to current data |
+| Reference | `references/input_information_checklist.md` | Required information before formal script writing |
+| Reference | `references/r_style_rules.md` | Naming, comments, function placement, and readability rules |
+| Reference | `references/reproducible_outputs.md` | Output folders, seeds, logs, session info, and path handling |
+| Reference | `references/review_checklist.md` | Checklist for auditing existing R scripts |
+| Template | `templates/r_analysis_script.R` | Reusable R analysis script skeleton |
+| Example | `examples/r_script_template.R` | Concrete example script showing the preferred shape |
+
+## Do Not Do
+
+- Do not turn a simple analysis script into a package-like architecture unless the user asks.
+- Do not hide analysis logic behind many tiny functions.
+- Do not silently change statistical methods or model formulas from a reference method.
+- Do not invent missing sample groups, covariates, file schemas, or biological conclusions.
+- Do not overwrite existing output files in examples unless the user clearly asks for that behavior.

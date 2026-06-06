@@ -3,7 +3,11 @@
 # Purpose: <brief analysis goal>
 # Author: <name>
 # Date: <YYYY-MM-DD>
+# Notes:
+#   - Replace paths, grouping variables, model formulas, and parameters.
+#   - Keep assumptions visible when data details are incomplete.
 # ============================================================
+
 
 # ============================================================
 # 1. Load packages and set environment
@@ -33,15 +37,15 @@ dir.create(log_dir, showWarnings = FALSE, recursive = TRUE)
 # ============================================================
 
 # Input files:
-# - metadata.csv: sample-level information; must include sample_id and group columns.
-# - feature_table.csv: numeric feature table; samples should be rows and features columns.
+# - metadata.csv: sample-level information; must include sample_id and group.
+# - feature_table.csv: numeric feature table; samples are rows and features are columns.
 metadata_path <- file.path(input_dir, "metadata.csv")
 feature_table_path <- file.path(input_dir, "feature_table.csv")
 
 metadata <- read_csv(metadata_path, show_col_types = FALSE)
 feature_table <- read_csv(feature_table_path, show_col_types = FALSE)
 
-# Check that required identifiers are present before formal analysis.
+# Check required identifiers before formal analysis.
 stopifnot("sample_id" %in% names(metadata))
 stopifnot("sample_id" %in% names(feature_table))
 stopifnot("group" %in% names(metadata))
@@ -62,7 +66,7 @@ analysis_data <- feature_table %>%
 
 # Example analysis:
 # Calculate per-sample total abundance and compare it across groups.
-# Replace this block with the statistical model or method required by the project.
+# Replace this block with the statistical model required by the project.
 sample_summary <- feature_table %>%
   mutate(total_abundance = rowSums(across(all_of(feature_columns)), na.rm = TRUE)) %>%
   select(sample_id, total_abundance) %>%
