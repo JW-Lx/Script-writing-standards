@@ -1,7 +1,0 @@
-interface:
-  display_name: "R Script Writing Standards"
-  short_description: "Readable R analysis script standards."
-  default_prompt: "Use $r-script-writing-standards to draft, revise, or review an R analysis script with a clear pipeline, concise comments, restrained function use, and reproducible outputs."
-
-policy:
-  allow_implicit_invocation: true

@@ -1,0 +1,8 @@
+interface:
+  display_name: "Script Forge"
+  short_description: "Write readable, stepwise scientific analysis scripts."
+  brand_color: "#2563EB"
+  default_prompt: "Use $script-forge to write a readable analysis script with a clear goal, workflow, output list, Step sections, and concise comments."
+
+policy:
+  allow_implicit_invocation: true
