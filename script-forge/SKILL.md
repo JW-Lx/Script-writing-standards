@@ -1,6 +1,6 @@
 ---
 name: script-forge
-description: Create, revise, and audit high-readability scientific analysis scripts, especially R scripts, with a clear goal/workflow/output header, Step-based sections, concise comments, explicit paths, and maintainable researcher-facing style. Use when the user asks for R scripts, analysis scripts, script style standardization, or wants the current readable script style reused.
+description: Create, revise, and audit high-readability scientific analysis scripts, especially R scripts, with a concise pre-work checklist, clear goal/workflow/output header, Step-based sections, concise comments, explicit paths, and maintainable researcher-facing style. Use when the user asks for R scripts, analysis scripts, script style standardization, or wants the current readable script style reused while avoiding redundant exploratory code in final scripts.
 ---
 
 # Script Forge
@@ -16,6 +16,15 @@ Produce scripts that are clear, runnable, and easy to maintain. Prefer a mostly 
 When files or previous scripts are available, inspect the real inputs before writing final code. Confirm the object names, key columns, sample orientation, factor levels, and expected output folder when those details affect the script.
 
 State assumptions when they matter. If a statistical reference level, formula, or biological interpretation is ambiguous, ask or write the assumption clearly in the script comments.
+
+For a new analysis script, provide a concise work checklist before implementation unless the user explicitly asks to skip it. Use exactly these four parts:
+
+1. **分析目标** - restate what the script should accomplish.
+2. **输入数据** - list provided inputs with paths; mark missing or uncertain inputs clearly.
+3. **结果输出** - list planned output files and include output paths.
+4. **需要确认信息** - ask only the decisions needed before coding.
+
+Keep this checklist short and review-oriented. Its purpose is to let the user confirm the work before the script is written.
 
 ## Default Script Shape
 
@@ -70,6 +79,9 @@ Keep the script readable:
 - Prefer direct `load(...)`, `read.delim(...)`, `save(...)`, and `write.table(...)` calls when they are sufficient.
 - Use small helper functions only for repeated checks or repeated transformations.
 - Avoid adding general-purpose configuration systems unless the user asks.
+- Use exploratory checks while inspecting data, but do not carry redundant exploratory branches into the final script after the real structure is known.
+- Write final scripts with the confirmed object names, ID columns, grouping variables, and paths. Do not keep alternate matching logic, broad fallback branches, or verbose `stop(...)` blocks for cases already resolved during inspection.
+- Keep only lightweight checks that protect genuinely uncertain or user-editable inputs, such as required files, required columns, and output directory creation.
 - Keep formulas, thresholds, grouping variables, and reference groups visible near the code that uses them.
 - For tables, preserve feature names and annotations with clear column names.
 - For result objects, use names that describe the analysis result rather than temporary implementation details.
